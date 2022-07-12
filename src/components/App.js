@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import '../index.css';
+
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+
 import api from '../utils/api';
+import {baseUrl, signUp, signIn, getToken} from '../utils/apiAuth';
+
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
@@ -10,10 +16,10 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup'
 import ImagePopup from './ImagePopup';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import InfoTooltip from './InfoTooltip';
+import Login from './Login';
 import ProtectedRoute from './ProtectedRoute';
+import Register from './Register';
 
 
 function App() {

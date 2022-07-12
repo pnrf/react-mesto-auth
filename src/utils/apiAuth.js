@@ -36,3 +36,5 @@ const getToken = (jwt) => {
     },
   }).then(checkResponse);
 }
+
+export {baseUrl, signUp, signIn, getToken};
