@@ -167,6 +167,7 @@ function App() {
     setEditAvatarPopupOpen(false);
     setSelectedCard(null);
     setConfirmationPopupOpen(null);
+    setInfoTooltip(false);
   }
 
   function closePopupWithEsc(event) {
@@ -204,27 +205,24 @@ function App() {
           </Route>
 
           <Route path='/signup'>
-            <Header title='Регистрация' route='/signup' />
+            <Header title='Войти' route='/signin' />
             <Register />
           </Route>
 
           <Route path='/signin'>
-            <Header title='Войти' route='/signin' />
+            <Header title='Регистрация' route='/signup' />
             <Login onLogin={onLogin}/>
           </Route>
         </Switch>
 
-        {/* <Main
-          onEditProfile = {handleEditProfileClick}
-          onAddPlace = {handleAddPlaceClick}
-          onEditAvatar = {handleEditAvatarClick}
-          onCardClick = {handleCardClick}
-          onCardLike = {handleCardLike}
-          cards={cards}
-          onConfirmCardDelete = {handleConfimationClick}
-        /> */}
-
         <Footer />
+
+        <InfoTooltip
+          image={popupImage}
+          message={popupMessage}
+          isOpen={infoTooltip}
+          onClose = {closeAllPopups}
+        />
 
         <EditProfilePopup
           isOpen = {isEditProfilePopupOpen}
