@@ -11,15 +11,17 @@ import {baseUrl, signUp, signIn, getToken} from '../utils/apiAuth';
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
+
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup'
 import ImagePopup from './ImagePopup';
-import InfoTooltip from './InfoTooltip';
+
 import Login from './Login';
-import ProtectedRoute from './ProtectedRoute';
 import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip';
 
 
 function App() {
@@ -147,36 +149,28 @@ function App() {
       <div className="root">
 
         <Switch>
-          <Route exact path='/' component={
-            <>
-              <Header title='Выход' route=''/>
-              <ProtectedRoute
-                component={Main}
-                onEditProfile = {handleEditProfileClick}
-                onAddPlace = {handleAddPlaceClick}
-                onEditAvatar = {handleEditAvatarClick}
-                onCardClick = {handleCardClick}
-                onCardLike = {handleCardLike}
-                cards={cards}
-                onConfirmCardDelete = {handleConfimationClick}
-              />
-            </>
-          }>
+          <Route exact path='/'>
             <Redirect to={!isLoggedIn && '/signin'} />
+            <Header title='Выход' route='' />
+            <Main
+              onEditProfile = {handleEditProfileClick}
+              onAddPlace = {handleAddPlaceClick}
+              onEditAvatar = {handleEditAvatarClick}
+              onCardClick = {handleCardClick}
+              onCardLike = {handleCardLike}
+              cards={cards}
+              onConfirmCardDelete = {handleConfimationClick}
+            />
           </Route>
 
-          <Route path='/signup' component={
-            <>
-              <Header title='Регистрация' route='/signup' />
-            </>
-          }>
+          <Route path='/signup'>
+            <Header title='Регистрация' route='/signup' />
+            <Register />
           </Route>
 
-          <Route path='/signin' component={
-              <>
-                <Header title='Войти' route='/signin' />
-              </>
-            }>
+          <Route path='/signin'>
+            <Header title='Войти' route='/signin' />
+            <Login />
           </Route>
         </Switch>
 

@@ -2,4 +2,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 260px;
+}
+
+@media screen and (min-width: 768px) {
+  .auth__form {
+    width: 358px;
+  }
 }

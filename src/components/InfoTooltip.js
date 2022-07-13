@@ -1,4 +1,4 @@
-function InfoTooltip(props) {
+function InfoTooltip() {
 
 };
 
