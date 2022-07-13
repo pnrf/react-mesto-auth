@@ -57,6 +57,24 @@ function App() {
     }).finally(handleInfoTooltip);
   };
 
+  function onRegister(password, email) {
+    signUp(password, email).then(() => {
+      setPopupImage(checkmarkImg);
+      setPopupMessage('Вы успешно зарегистрировались!');
+      <Redirect to='/signin' />
+    }).catch(() => {
+      setPopupImage(crossImg);
+      setPopupMessage('Что-то пошло не так! Попробуйте еще раз.')
+    }).finally(handleInfoTooltip);
+  };
+
+  function onLogOut() {
+    setIsLoggedIn(false);
+    setEmailValue(null);
+    <Redirect to='/signin' />
+    localStorage.removeItem('jwt');
+  };
+
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
@@ -189,7 +207,7 @@ function App() {
 
         <Switch>
           <Route exact path='/'>
-            <Header title='Выход' route='' />
+            <Header title='Выход' route='' email={emailValue} onClick={onLogOut}/>
             <ProtectedRoute
               component={Main}
               isLogged={isLoggedIn}
@@ -206,7 +224,7 @@ function App() {
 
           <Route path='/signup'>
             <Header title='Войти' route='/signin' />
-            <Register />
+            <Register onRegister={onRegister}/>
           </Route>
 
           <Route path='/signin'>
