@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-function Login(props) {
+function Login({onLogin}) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
@@ -14,7 +14,7 @@ function Login(props) {
 
   const handleSubmitOfLoginForm = event => {
     event.preventDefault();
-    props.onLogin(password, email);
+    onLogin(password, email);
   };
 
 

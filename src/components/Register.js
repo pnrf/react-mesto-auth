@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Link} from 'react-router-dom';
 
-export default function Register(props) {
+export default function Register({onRegister}) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
@@ -15,7 +15,7 @@ export default function Register(props) {
 
   const handleSubmitOfRegisterForm = event => {
     event.preventDefault();
-    props.onRegister(password, email);
+    onRegister(password, email);
   };
 
   return (

@@ -1,13 +1,13 @@
 import logo from '../images/logo-white.svg';
 import {Link} from 'react-router-dom';
 
-function Header(props) {
+function Header({title, route, email, onClick}) {
   return (
     <header className="header">
       <img src={logo} alt="Логотип" className="header__logo" />
       <div className='header__auth'>
-        <p className='header__text'>{props.email}</p>
-        <Link to={props.route} className='header__text header__link' onClick={props.onClick}>{props.title}</Link>
+        <p className='header__text'>{email}</p>
+        <Link to={route} className='header__text header__link' onClick={onClick}>{title}</Link>
       </div>
     </header>
   )
