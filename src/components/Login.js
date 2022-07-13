@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-export default function Login(props) {
+function Login(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
@@ -17,9 +17,10 @@ export default function Login(props) {
     props.onLogin(password, email);
   };
 
+
   return (
     <section className='auth'>
-      <h3 className='auth__title'>Войти</h3>
+      <h3 className='auth__title'>Вход</h3>
       <form className='auth__form' onSubmit={handleSubmitOfLoginForm}>
         <input className='auth__input' type='email' placeholder='Email' value={email} onChange={handleEmailInput} required></input>
         <input className='auth__input' type='password' placeholder='Пароль' value={password} onChange={handlePasswordInput} required></input>
@@ -28,3 +29,5 @@ export default function Login(props) {
     </section>
   );
 };
+
+export default Login;

@@ -22,6 +22,8 @@ import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
 import InfoTooltip from './InfoTooltip';
+import checkmarkImg from '../images/checkmark.svg'
+import crossImg from '../images/cross.svg'
 
 
 function App() {
@@ -34,9 +36,45 @@ function App() {
   const [isLoading, setLoading] = React.useState(false)
 
   const [currentUser, setCurrentUser] = React.useState({})
-  const [cards, setCards] = React.useState([]);
+  const [cards, setCards] = React.useState([])
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const [emailValue, setEmailValue] = React.useState(null)
+  const [popupImage, setPopupImage] = React.useState("")
+  const [popupMessage, setPopupMessage] = React.useState("")
+  const [infoTooltip, setInfoTooltip] = React.useState(false)
+
+
+  function onLogin(password, email) {
+    signIn(password, email).then((res) => {
+      localStorage.setItem('jwt', res.token);
+      setIsLoggedIn(true);
+      setEmailValue(email);
+      <Redirect to='/' />
+    }).catch(() => {
+      setPopupImage(crossImg);
+      setPopupMessage('Что-то пошло не так! Попробуйте еще раз.')
+    }).finally(handleInfoTooltip);
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      getToken(jwt).then((res) => {
+        if (res) {
+          setIsLoggedIn(true);
+          setEmailValue(res.data.email);
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
+    }
+  }, []);
+
+
+  function handleInfoTooltip() {
+    setInfoTooltip(true);
+  };
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()]).then(([profileInfo, card]) => {
@@ -150,9 +188,10 @@ function App() {
 
         <Switch>
           <Route exact path='/'>
-            <Redirect to={!isLoggedIn && '/signin'} />
             <Header title='Выход' route='' />
-            <Main
+            <ProtectedRoute
+              component={Main}
+              isLogged={isLoggedIn}
               onEditProfile = {handleEditProfileClick}
               onAddPlace = {handleAddPlaceClick}
               onEditAvatar = {handleEditAvatarClick}
@@ -160,7 +199,8 @@ function App() {
               onCardLike = {handleCardLike}
               cards={cards}
               onConfirmCardDelete = {handleConfimationClick}
-            />
+            >
+            </ProtectedRoute>
           </Route>
 
           <Route path='/signup'>
@@ -170,7 +210,7 @@ function App() {
 
           <Route path='/signin'>
             <Header title='Войти' route='/signin' />
-            <Login />
+            <Login onLogin={onLogin}/>
           </Route>
         </Switch>
 
