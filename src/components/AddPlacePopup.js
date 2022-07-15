@@ -22,7 +22,6 @@ function AddPlacePopup({isOpen, onClose, onCloseEsc, onCloseOverlay, onAddPlace,
 
   function handleSubmit(e) {
     e.preventDefault();
-
     onAddPlace({
       name: title,
       link: link

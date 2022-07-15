@@ -17,7 +17,6 @@ export default function Login({onLogin}) {
     onLogin(email, password);
   };
 
-
   return (
     <section className='auth'>
       <h3 className='auth__title'>Вход</h3>

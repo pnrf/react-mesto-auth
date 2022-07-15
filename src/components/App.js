@@ -1,23 +1,17 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-
 import '../index.css';
-
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-
 import api from '../utils/api';
 import {signUp, signIn, checkToken} from '../utils/apiAuth';
-
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
-
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup'
 import ImagePopup from './ImagePopup';
-
 import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
@@ -25,27 +19,21 @@ import InfoTooltip from './InfoTooltip';
 import checkmarkImg from '../images/checkmark.svg'
 import crossImg from '../images/cross.svg'
 
-
 export default function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [isConfirmationPopupOpen, setConfirmationPopupOpen] = React.useState(null);
-
   const [isLoading, setLoading] = React.useState(false);
-
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [emailValue, setEmailValue] = React.useState(null);
   const [popupImage, setPopupImage] = React.useState(" ");
   const [popupMessage, setPopupMessage] = React.useState(" ");
   const [infoTooltip, setInfoTooltip] = React.useState(false);
-
   const navigate = useNavigate();
-
 
   function handleLogin(email, password) {
     signIn(email, password)
@@ -226,7 +214,6 @@ export default function App() {
       closeAllPopups();
     }
   }
-
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
