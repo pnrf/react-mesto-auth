@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import '../index.css';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -20,18 +20,18 @@ import checkmarkImg from '../images/checkmark.svg'
 import crossImg from '../images/cross.svg'
 
 export default function App() {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [isConfirmationPopupOpen, setConfirmationPopupOpen] = React.useState(null);
-  const [isLoading, setLoading] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [emailValue, setEmailValue] = React.useState(null);
-  const [popupStatus, setPopupStatus] = React.useState({ image:'', message:'' });
-  const [infoTooltip, setInfoTooltip] = React.useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [isConfirmationPopupOpen, setConfirmationPopupOpen] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [emailValue, setEmailValue] = useState(null);
+  const [popupStatus, setPopupStatus] = useState({ image:'', message:'' });
+  const [infoTooltip, setInfoTooltip] = useState(false);
   const navigate = useNavigate();
 
   function handleLogin(email, password) {
