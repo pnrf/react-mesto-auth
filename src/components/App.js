@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 import '../index.css';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 import api from '../utils/api';
-import {baseUrl, signUp, signIn, getToken} from '../utils/apiAuth';
+import {signUp, signIn, checkToken} from '../utils/apiAuth';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -26,73 +26,83 @@ import checkmarkImg from '../images/checkmark.svg'
 import crossImg from '../images/cross.svg'
 
 
-function App() {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false)
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false)
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false)
-  const [selectedCard, setSelectedCard] = React.useState(null)
-  const [isConfirmationPopupOpen, setConfirmationPopupOpen] = React.useState(null)
+export default function App() {
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [isConfirmationPopupOpen, setConfirmationPopupOpen] = React.useState(null);
 
-  const [isLoading, setLoading] = React.useState(false)
+  const [isLoading, setLoading] = React.useState(false);
 
-  const [currentUser, setCurrentUser] = React.useState({})
-  const [cards, setCards] = React.useState([])
+  const [currentUser, setCurrentUser] = React.useState({});
+  const [cards, setCards] = React.useState([]);
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
-  const [emailValue, setEmailValue] = React.useState(null)
-  const [popupImage, setPopupImage] = React.useState("")
-  const [popupMessage, setPopupMessage] = React.useState("")
-  const [infoTooltip, setInfoTooltip] = React.useState(false)
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [emailValue, setEmailValue] = React.useState(null);
+  const [popupImage, setPopupImage] = React.useState(" ");
+  const [popupMessage, setPopupMessage] = React.useState(" ");
+  const [infoTooltip, setInfoTooltip] = React.useState(false);
+
+  const navigate = useNavigate();
 
 
-  function onLogin(password, email) {
-    signIn(password, email).then((res) => {
-      localStorage.setItem('jwt', res.token);
-      setIsLoggedIn(true);
-      setEmailValue(email);
-      <Redirect to='/' />
-    }).catch(() => {
-      setPopupImage(crossImg);
-      setPopupMessage('Что-то пошло не так! Попробуйте еще раз.')
-    }).finally(handleInfoTooltip);
+  function handleLogin(email, password) {
+    signIn(email, password)
+      .then((res) => {
+        localStorage.setItem('jwt', res.token);
+        setIsLoggedIn(true);
+        setEmailValue(email);
+        navigate("/");
+      })
+      .catch(() => {
+        setPopupImage(crossImg);
+        setPopupMessage('Что-то пошло не так! Попробуйте еще раз.');
+        handleInfoTooltip();
+      });
   };
 
-  function onRegister(password, email) {
-    signUp(password, email).then(() => {
-      setPopupImage(checkmarkImg);
-      setPopupMessage('Вы успешно зарегистрировались!');
-      <Redirect to='/signin' />
-    }).catch(() => {
-      setPopupImage(crossImg);
-      setPopupMessage('Что-то пошло не так! Попробуйте еще раз.')
-    }).finally(handleInfoTooltip);
+  function handleRegister(email, password) {
+    signUp(email, password)
+      .then(() => {
+        setPopupImage(checkmarkImg);
+        setPopupMessage('Вы успешно зарегистрировались!');
+        navigate("/signin");
+      })
+      .catch(() => {
+        setPopupImage(crossImg);
+        setPopupMessage('Что-то пошло не так! Попробуйте еще раз.');
+      })
+      .finally(handleInfoTooltip);
   };
 
-  function onLogOut() {
+  function handleLogOut() {
     setIsLoggedIn(false);
-    setEmailValue(null);
-    <Redirect to='/signin' />
     localStorage.removeItem('jwt');
+    setEmailValue(null);
+    navigate("/signin");
+  };
+
+  function handleInfoTooltip() {
+    setInfoTooltip(true);
   };
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      getToken(jwt).then((res) => {
-        if (res) {
-          setIsLoggedIn(true);
-          setEmailValue(res.data.email);
-        }
-      }).catch((err) => {
-        console.error(err);
-      });
+      checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setIsLoggedIn(true);
+            setEmailValue(res.data.email);
+            navigate('/');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, []);
-
-
-  function handleInfoTooltip() {
-    setInfoTooltip(true);
-  };
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()]).then(([profileInfo, card]) => {
@@ -131,12 +141,17 @@ function App() {
 
   function handleUpdateUser(data) {
     setLoading(true);
-    api.updateUserInfo(data).then((newUser) => {
-      setCurrentUser(newUser);
-      closeAllPopups();
-    }).catch((err) => {
-      console.error(err);
-    }).finally(() => {setLoading(false)});
+    api.updateUserInfo(data)
+      .then((newUser) => {
+        setCurrentUser(newUser);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false)
+      });
   }
 
   function handleEditAvatarClick() {
@@ -145,12 +160,17 @@ function App() {
 
   function handleUpdateAvatar(data) {
     setLoading(true);
-    api.updateProfileAvatar(data).then((newAvatar) => {
-      setCurrentUser(newAvatar);
-      closeAllPopups();
-    }).catch((err) => {
-      console.error(err);
-    }).finally(() => {setLoading(false)});
+    api.updateProfileAvatar(data)
+      .then((newAvatar) => {
+        setCurrentUser(newAvatar);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false)
+      });
   }
 
   function handleAddPlaceClick() {
@@ -159,12 +179,17 @@ function App() {
 
   function handleAddPlaceSubmit(data) {
     setLoading(true);
-    api.addNewCard(data).then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups();
-    }).catch((err) => {
-      console.error(err);
-    }).finally(() => {setLoading(false)});
+    api.addNewCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false)
+      });
   }
 
   function handleConfimationClick(card) {
@@ -172,11 +197,13 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.removeCard(card._id).then(() => {
-      setCards((items) => items.filter((c) => c._id !== card._id && c));
-    }).catch((err) => {
-      console.error(err);
-    });
+    api.removeCard(card._id)
+      .then(() => {
+        setCards((items) => items.filter((c) => c._id !== card._id && c));
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   function closeAllPopups() {
@@ -205,33 +232,65 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
 
-        <Switch>
-          <Route exact path='/'>
-            <Header title='Выход' route='' email={emailValue} onClick={onLogOut}/>
-            <ProtectedRoute
-              component={Main}
-              isLogged={isLoggedIn}
-              onEditProfile = {handleEditProfileClick}
-              onAddPlace = {handleAddPlaceClick}
-              onEditAvatar = {handleEditAvatarClick}
-              onCardClick = {handleCardClick}
-              onCardLike = {handleCardLike}
-              cards={cards}
-              onConfirmCardDelete = {handleConfimationClick}
-            >
-            </ProtectedRoute>
-          </Route>
+        <Routes>
+          <Route exact path='/'
+            element={
+              <>
+                <Header
+                  title='Выйти'
+                  route=''
+                  email={emailValue}
+                  onClick={handleLogOut}
+                />
+                <ProtectedRoute
+                  component={Main}
+                  isLoggedIn={isLoggedIn}
+                  onEditProfile = {handleEditProfileClick}
+                  onAddPlace = {handleAddPlaceClick}
+                  onEditAvatar = {handleEditAvatarClick}
+                  onCardClick = {handleCardClick}
+                  onCardLike = {handleCardLike}
+                  cards={cards}
+                  onConfirmCardDelete = {handleConfimationClick}
+                />
+              </>
+            }
+          />
 
-          <Route path='/signup'>
-            <Header title='Войти' route='/signin' />
-            <Register onRegister={onRegister}/>
-          </Route>
+          <Route path='/signup'
+            element={
+              <>
+                <Header
+                  title='Войти'
+                  route='/signin'
+                />
+                <Register
+                  onRegister={handleRegister}
+                />
+              </>
+            }
+          />
 
-          <Route path='/signin'>
-            <Header title='Регистрация' route='/signup' />
-            <Login onLogin={onLogin}/>
-          </Route>
-        </Switch>
+          <Route path='/signin'
+            element={
+              <>
+                <Header
+                  title='Регистрация'
+                  route='/signup'
+                />
+                <Login
+                  onLogin={handleLogin}
+                />
+              </>
+            }
+          />
+
+          <Route exact path="*"
+            element={
+              isLoggedIn ? <Navigate to="/" /> : <Navigate to="/signin"/>
+            }
+          />
+        </Routes>
 
         <Footer />
 
@@ -285,5 +344,3 @@ function App() {
     </CurrentUserContext.Provider>
   );
 }
-
-export default App;

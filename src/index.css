@@ -51,6 +51,8 @@ html {
 @import url(./blocks/popup/__content/popup__content.css);
 @import url(./blocks/popup/__field/popup__field.css);
 @import url(./blocks/popup/__figcaption/popup__figcaption.css);
+@import url(./blocks/popup/__icon/popup__icon.css);
+@import url(./blocks/popup/__icon-caption/popup__icon-caption.css);
 @import url(./blocks/popup/__image/popup__image.css);
 @import url(./blocks/popup/__input-list/popup__input-list.css);
 @import url(./blocks/popup/__input/popup__input.css);

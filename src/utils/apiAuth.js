@@ -1,40 +1,39 @@
 const checkResponse = (res) => {
   if (res.ok) {
     return res.json();
-  } else {
-    return Promise.reject(res.status);
   }
+    return Promise.reject(res.status);
 }
 
-const baseUrl = 'https://auth.nomoreparties.co';
+const BASE_URL = 'https://auth.nomoreparties.co';
 
-const signUp = (password, email) => {
-  const requestUrl = baseUrl + '/signup';
+const signUp = (email, password) => {
+  const requestUrl = BASE_URL + '/signup';
   return fetch(requestUrl, {
     method: 'POST',
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ password, email }),
+    body: JSON.stringify({ email, password }),
   }).then(checkResponse);
 }
 
-const signIn = (password, email) => {
-  const requestUrl = baseUrl + '/signin';
+const signIn = (email, password) => {
+  const requestUrl = BASE_URL + '/signin';
   return fetch(requestUrl, {
     method: 'POST',
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ password, email }),
+    body: JSON.stringify({ email, password }),
   }).then(checkResponse);
 }
 
-const getToken = (jwt) => {
-  const requestUrl = baseUrl + '/users/me';
+const checkToken = (token) => {
+  const requestUrl = BASE_URL + '/users/me';
   return fetch(requestUrl, {
     method: 'GET',
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${jwt}`
+      "Authorization": `Bearer ${token}`
     },
   }).then(checkResponse);
 }
 
-export {baseUrl, signUp, signIn, getToken};
+export {signUp, signIn, checkToken};
