@@ -30,8 +30,7 @@ export default function App() {
   const [cards, setCards] = React.useState([]);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [emailValue, setEmailValue] = React.useState(null);
-  const [popupImage, setPopupImage] = React.useState(" ");
-  const [popupMessage, setPopupMessage] = React.useState(" ");
+  const [popupStatus, setPopupStatus] = React.useState({ image:'', message:'' });
   const [infoTooltip, setInfoTooltip] = React.useState(false);
   const navigate = useNavigate();
 
@@ -44,8 +43,7 @@ export default function App() {
         navigate("/");
       })
       .catch(() => {
-        setPopupImage(crossImg);
-        setPopupMessage('Что-то пошло не так! Попробуйте еще раз.');
+        setPopupStatus({image: crossImg, message: 'Что-то пошло не так! Попробуйте еще раз.'});
         handleInfoTooltip();
       });
   };
@@ -53,13 +51,11 @@ export default function App() {
   function handleRegister(email, password) {
     signUp(email, password)
       .then(() => {
-        setPopupImage(checkmarkImg);
-        setPopupMessage('Вы успешно зарегистрировались!');
+        setPopupStatus({image: checkmarkImg, message: 'Вы успешно зарегистрировались!'});
         navigate("/signin");
       })
       .catch(() => {
-        setPopupImage(crossImg);
-        setPopupMessage('Что-то пошло не так! Попробуйте еще раз.');
+        setPopupStatus({image: crossImg, message: 'Что-то пошло не так! Попробуйте еще раз.'});
       })
       .finally(handleInfoTooltip);
   };
@@ -93,13 +89,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()]).then(([profileInfo, card]) => {
-      setCurrentUser(profileInfo);
-      setCards(card);
-    }).catch((err) => {
-      console.error(err);
-    })
-  }, [])
+    if (isLoggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([profileInfo, card]) => {
+          setCurrentUser(profileInfo);
+          setCards(card);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+    }
+  }, [isLoggedIn])
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -282,8 +282,7 @@ export default function App() {
         <Footer />
 
         <InfoTooltip
-          image={popupImage}
-          message={popupMessage}
+          popupStatus={popupStatus}
           isOpen={infoTooltip}
           onClose = {closeAllPopups}
         />
